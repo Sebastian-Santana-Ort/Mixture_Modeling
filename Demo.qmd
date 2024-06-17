@@ -1,0 +1,66 @@
+---
+title: "Demonstration: Mixture Modeling in R"
+author: "Sebastian Santana Ortiz"
+format: gfm
+toc: TRUE
+toc-depth: 3
+editor: visual
+---
+
+The purpose of this file is to demonstrate key steps in the workflow and operations required to use finite mixture models and create latent profiles/clusters in R. The analysis will be split in two sections:
+
+-   Build a series of latent profiles that capture variances among key factors.
+
+-   Depict and interpret associations between the latent profiles observed and other descriptive factors.
+
+The first section of analyses will address the first objective by:
+
+1.  Using the Mclust package to build a series of finite mixture models and compare their fit to the data (as measured by their Bayes Information Criterion scores).
+2.  Perform cross-validation on the model parameters built initially and assess their robustness.
+3.  Use dimensionality reduction to visualize the distribution of clusters.
+
+The second section of the analysis will address the second objective by:
+
+1.  Calculating descriptive statistics of the clusters identified based on their sub-domain scores.
+2.  Using a multinomial logistic regression to understand the odds of profile membership associated with specific determinants.
+3.  Training a classifier (XGBoost - Extreme Gradient Boosted Decision tree) model to identify cluster membership and visualize the SHAP values learned.
+
+```{r loading_libraries}
+
+library(mclust)
+library(caret)
+library(xgboost)
+```
+
+## Demo of basic clustering with IRIS
+
+```{r}
+clust_data = iris
+
+citation("mclust")
+
+set.seed(2013)
+m1 = Mclust(data =clust_data[,1:4], G = 1:4)
+summary(m1, parameters = TRUE)
+plot(m1, what = "BIC")
+LRT = mclustBootstrapLRT(mix, modelName = "V", maxG = 4)
+```
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
